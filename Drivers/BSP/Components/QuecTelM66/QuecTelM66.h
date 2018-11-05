@@ -9,7 +9,7 @@
 #define BSP_COMPONENTS_QUECTELM66_QUECTELM66_H_
 
 
-#include "../../../../Middlewares/AtCommandParser/command.h"
+#include "command.h"
 
 #define USE_GENERAL_COMMAND
 #define USE_INTERFACE_CONTROL_COMMAND

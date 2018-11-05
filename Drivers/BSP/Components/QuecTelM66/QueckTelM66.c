@@ -5,7 +5,7 @@
  *      Author: HP
  */
 
-#include "../../../../Middlewares/AtCommandParser/command.h"
+#include "command.h"
 
 #define NETWORK_SERVICE_COMMANDS_SUPPORT
 #define GPRS_COMMANDS_SUPPORT

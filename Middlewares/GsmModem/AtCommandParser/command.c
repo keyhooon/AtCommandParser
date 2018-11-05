@@ -4,8 +4,7 @@
  *  Created on: Apr 26, 2018
  *      Author: home
  */
-#include "../AtCommandParser/command.h"
-
+#include "command.h"
 #include "cmsis_os.h"
 #include "string.h"
 #include "stdio.h"
@@ -20,28 +19,20 @@
 #define COMMAND_ECHO_DEFAULT					1
 #define RESPONSE_FORMAT_DEFAULT					1
 
-#define Perform_Command(Command,Response)																\
-({																										\
-			Response = Command_Executer(commandParser, command)											\
-			if (Response.status != ResponseStatusOk)													\
-				BSP_GSM_ErrorHandler();																	\
-			Response.resultNumber;																		\
-})
 
 
-AtCommandExecuter_TypeDef * CommandExecuter_Init(
-		BufferStream_TypeDef * inputBuffer,
-		osMessageQId messageId,
-		void (*write)(char *, uint32_t)) {
+
+
+
+AtCommandExecuter_TypeDef * CommandExecuter_Init(osMessageQId messageId) {
 	AtCommandExecuter_TypeDef * commandExecuter = pvPortMalloc(
 			sizeof(AtCommandExecuter_TypeDef));
-	commandExecuter->IO_Write = write;
 	commandExecuter->commandEcho = COMMAND_ECHO_DEFAULT;
 	commandExecuter->commandLineTerminationChar =
 	COMMAND_LINE_TERMINATION_CAHR_DEFAULT;
 	commandExecuter->responseForamettingChar = RESPONSE_FORMATTING_CHAR_DEFAULT;
 	commandExecuter->responseFormat = RESPONSE_FORMAT_DEFAULT;
-	commandExecuter->ResponseTokenizer = AtTokenizerInit(inputBuffer);
+	commandExecuter->ResponseTokenizer = AtTokenizerInit();
 	osMutexDef_t mutex = { 0 };
 	commandExecuter->mutexId = osMutexCreate(&mutex);
 	commandExecuter->messageId = messageId;
@@ -49,19 +40,19 @@ AtCommandExecuter_TypeDef * CommandExecuter_Init(
 }
 void CommandExecuter_DeInit(AtCommandExecuter_TypeDef *commandExecuter) {
 	osMutexDelete(commandExecuter->mutexId);
-	AtTokenizerDeInit(commandExecuter->ResponseTokenizer);
+	AtTokenizerDeInit();
 	vPortFree(commandExecuter);
 }
 
 
 
-Response_TypeDef * ExecuteCommand(
+Response_TypeDef * CommandExecuter_Execute(
 		AtCommandExecuter_TypeDef commandExecuter,
 		Command_TypeDef command) {
 	osMutexWait(commandExecuter.mutexId, osWaitForever);
 	char commandString[40];
 	GetCommandString(commandString, commandExecuter, command);
-	commandExecuter.IO_Write(commandString, strlen(commandString));
+	GSM_IO_Write(commandString, strlen(commandString));
 	osEvent event = osMessageGet(commandExecuter.messageId,
 			command.type.maximumResponseTime);
 	Response_TypeDef * result = 0;

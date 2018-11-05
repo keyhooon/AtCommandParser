@@ -8,14 +8,13 @@
 #ifndef TOKENIZER_ATTOKENIZER_H_
 #define TOKENIZER_ATTOKENIZER_H_
 
-#include "bufferStream.h"
+
 
 typedef struct {
 	char * Footer;
 	unsigned int FooterCount;
 	char * Seperator;
 	unsigned int SeperatorCount;
-	BufferStream_TypeDef * Buffer;
 } Tokenizer_TypeDef;
 
 typedef struct {
@@ -29,7 +28,7 @@ typedef struct {
 	int IndexNeedToBeReleased;
 } TokensList_TypeDef;
 
-Tokenizer_TypeDef * AtTokenizerInit(BufferStream_TypeDef * buffer);
+Tokenizer_TypeDef * AtTokenizerInit();
 void AtTokenizerDeInit(Tokenizer_TypeDef * tokenizer);
 TokensList_TypeDef AtTokenizedResponse(
 		Tokenizer_TypeDef * Tokenizer, unsigned int length);

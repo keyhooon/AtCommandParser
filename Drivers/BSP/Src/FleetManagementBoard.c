@@ -44,6 +44,8 @@ static void COMx_Close(COM_TypeDef COM);
 static void COMx_Write(COM_TypeDef COM, uint8_t *Value, uint8_t Size);
 static void COMx_Write_DMA(COM_TypeDef COM, char *buffer, uint8_t length);
 static void COMx_Read(COM_TypeDef COM, char * data, uint32_t length);
+inline static void COMx_ReadBefore(COM_TypeDef COM, char * data,
+		uint32_t length);
 inline static char * COMx_Read_Char(COM_TypeDef COM);
 void COMx_DataReceivedCallback(COM_TypeDef COM, uint32_t Length);
 static void COMx_Error(COM_TypeDef COM);
@@ -183,7 +185,7 @@ static void COMx_DeInit(COM_TypeDef COM)
 
 
 static void COMx_Open(COM_TypeDef COM) {
-	FLEET_COMx_BUFFER_STREAM[COM] = BufferStreamInit(1024);
+	FLEET_COMx_BUFFER_STREAM[COM] = BufferStreamInit(DEFAULT_BUFFER_LENGTH);
 	if (HAL_UART_Receive_DMA(&FLEET_COMx_HUART[COM],
 			FLEET_COMx_BUFFER_STREAM[COM]->buffer,
 			FLEET_COMx_BUFFER_STREAM[COM]->length) != HAL_OK)
@@ -241,11 +243,16 @@ static void COMx_Write_DMA(COM_TypeDef COM, char *buffer, uint8_t length)
 static void COMx_Read(COM_TypeDef COM, char * data, uint32_t length) {
 	BufferStreamRead(FLEET_COMx_BUFFER_STREAM[COM], data, length);
 }
+inline static void COMx_ReadBefore(COM_TypeDef COM, char * data,
+		uint32_t length) {
+	BufferStreamReadBefore(FLEET_COMx_BUFFER_STREAM[COM], data, length);
+}
 
 inline static char * COMx_Read_Char(COM_TypeDef COM)
 {
 	return BufferStreamReadChar(FLEET_COMx_BUFFER_STREAM[COM]);
 }
+
 
 /**
  * @brief  Callback raise when data received from COMx
@@ -342,6 +349,10 @@ void GSM_IO_Write(char * buffer, uint32_t length) {
 
 void GSM_IO_Read(char * data, uint32_t length) {
 	COMx_Read(GSM_COM, data, length);
+}
+
+void GSM_IO_ReadBefore(char * data, uint32_t length) {
+	COMx_ReadBefore(GSM_COM, data, length);
 }
 
 char* GSM_IO_Read_Char() {

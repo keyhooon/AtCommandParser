@@ -8,8 +8,6 @@
 #ifndef DATASTRUCTURE_BUFFERSTREAM_H_
 #define DATASTRUCTURE_BUFFERSTREAM_H_
 
-#include "cmsis_os.h"
-
 typedef struct
 {
 	char * buffer;
@@ -34,7 +32,10 @@ BufferStream_TypeDef * BufferStreamInit(uint32_t bufferLenght);
 void BufferStreamDeinit(BufferStream_TypeDef * bufferStream);
 
 void BufferStreamRead(BufferStream_TypeDef * bufferStream, char *data,
+
 		unsigned int count);
+inline void BufferStreamReadBefore(BufferStream_TypeDef * bufferStream,
+		char *data, unsigned int count);
 
 inline char* BufferStreamReadChar(
 		BufferStream_TypeDef * bufferStream);

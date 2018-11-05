@@ -64,7 +64,6 @@ typedef struct CommandParser_Struct
 	char commandEcho;							// e
 	char responseFormat;						// v
 	Tokenizer_TypeDef * ResponseTokenizer;
-	void (*IO_Write)(char *, uint32_t);
 	osMutexId mutexId;
 	osMessageQId messageId;
 } AtCommandExecuter_TypeDef;
@@ -111,17 +110,36 @@ typedef struct {
 	TokensList_TypeDef Tokens;
 } Response_TypeDef;
 
+#define DefaultRetriesCount		5
 
-AtCommandExecuter_TypeDef * CommandExecuter_Init(
-		BufferStream_TypeDef * inputBuffer,
-		osMessageQId messageId,
-		void (*write)(char *, uint32_t));
+#define CHECK_RESPONSE(response) ((response)->status == ResponseStatusOk && (response)->resultNumber == RESULT_NUMBER_OK)
+
+#define EXECUTE_COMMAND(command, response) ({ \
+	uint32_t register r = DefaultRetriesCount; \
+	if (response == NULL) { \
+		Response_TypeDef ** response; \
+		while (r--) { \
+			*response = CommandExecuter_Execute(*GsmCommandExecuter, command); \
+			if (CHECK_RESPONSE(*response)) \
+				break; \
+		} \
+		CommandExecuter_ResponseRelease(*response); \
+	} else { \
+		while (r--) { \
+			*response = CommandExecuter_Execute(*GsmCommandExecuter, command); \
+			if (CHECK_RESPONSE(*response)) \
+				break; \
+		} \
+	} \
+	return r; \
+})
+
+AtCommandExecuter_TypeDef * CommandExecuter_Init(osMessageQId messageId);
 void CommandExecuter_DeInit(AtCommandExecuter_TypeDef *commandExecuter);
-Response_TypeDef * ExecuteCommand(
+Response_TypeDef * CommandExecuter_Execute(
 		AtCommandExecuter_TypeDef commandExecuter, Command_TypeDef command);
 void GetCommandString(char* commandText,
-		AtCommandExecuter_TypeDef commandExecuter,
-		Command_TypeDef command);
+		AtCommandExecuter_TypeDef commandExecuter, Command_TypeDef command);
 Response_TypeDef * ResponseReceived(AtCommandExecuter_TypeDef commandExecuter,
 		unsigned int length);
 void CommandExecuter_ResponseRelease(Response_TypeDef * response);

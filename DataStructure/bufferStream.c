@@ -4,11 +4,8 @@
  *  Created on: Apr 27, 2018
  *      Author: home
  */
-#include "bufferStream.h"
-#include "string.h"
-#define DEFAULT_BUFFER_LENGTH		1024
-#define DEFAULT_QUEUE_LENGTH		5
 
+#include "bufferStream.h"
 
 BufferStream_TypeDef * BufferStreamInit(uint32_t bufferLenght)
 {
@@ -30,12 +27,14 @@ void BufferStreamDeinit(BufferStream_TypeDef * bufferStream)
 
 void BufferStreamRead(BufferStream_TypeDef * bufferStream, char *data,
 		unsigned int count) {
-	uint32_t c1 = bufferStream->length - bufferStream->tail;
+	int32_t c1 = bufferStream->length - bufferStream->tail;
 	if (c1 < count) {
 		memcpy(data, bufferStream->buffer + bufferStream->tail, c1);
 		count -= c1;
+		bufferStream->tail = 0;
 	}
 	memcpy(data, bufferStream->buffer + bufferStream->tail, count);
+	bufferStream->tail += count;
 }
 
 inline char * BufferStreamReadChar(
@@ -51,6 +50,17 @@ inline char * BufferStreamReadChar(
 
 	return result;
 }
+
+inline void BufferStreamReadBefore(BufferStream_TypeDef * bufferStream,
+		char *data, unsigned int count) {
+	int32_t c1 = count - bufferStream->tail;
+	if (c1 > 0) {
+		memcpy(data, bufferStream->buffer + bufferStream->length - c1, c1);
+		count -= c1;
+	}
+	memcpy(data, bufferStream->buffer + bufferStream->tail - count, count);
+}
+
 
 
 

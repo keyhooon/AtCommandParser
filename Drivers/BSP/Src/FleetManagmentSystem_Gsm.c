@@ -16,35 +16,11 @@ extern const CommandType_TypeDef SimRelatedCommands[14];
 extern const CommandType_TypeDef HttpCommands[6];
 extern const CommandType_TypeDef TcpIpCommands[34];
 
-#define DefaultRetriesCount		5
-
-#define CHECK_RESPONSE(response) ((response)->status == ResponseStatusOk && (response)->resultNumber == RESULT_NUMBER_OK)
 
 osMessageQId GsmMessageId;
 AtCommandExecuter_TypeDef * GsmCommandExecuter;
 
-static inline int Run_AtCommand(Command_TypeDef command,
-		Response_TypeDef ** response) {
-	uint32_t register r = DefaultRetriesCount;
-	if (response == NULL)
-	{
-		Response_TypeDef ** response;
-		while (r--) {
-			*response = ExecuteCommand(*GsmCommandExecuter, command);
-			if (CHECK_RESPONSE(*response))
-				break;
-		}
-		CommandExecuter_ResponseRelease(*response);
-	} else {
-		while (r--) {
-			*response = ExecuteCommand(*GsmCommandExecuter, command);
-			if (CHECK_RESPONSE(*response))
-				break;
-		}
-	}
 
-	return r;
-}
 
 static inline int Extended_Execute_Command(CommandType_TypeDef commandType,
 		Response_TypeDef ** response) {

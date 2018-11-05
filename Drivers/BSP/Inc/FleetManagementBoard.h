@@ -19,7 +19,8 @@ typedef enum {
 	COM1 = 0, COM2 = 1, GSM_COM = COM1, GPS_COM = COM2
 } COM_TypeDef;
 
-
+#define DEFAULT_BUFFER_LENGTH		1024
+#define DEFAULT_QUEUE_LENGTH		5
 
 
 
@@ -96,6 +97,7 @@ void GSM_IO_DeInit(void);
 void GSM_IO_Delay(uint32_t Delay);
 void GSM_IO_Write(char * buffer, uint32_t length);
 void GSM_IO_Read(char * data, uint32_t length);
+void GSM_IO_ReadBefore(char * data, uint32_t length);
 char * GSM_IO_Read_Char();
 BufferStream_TypeDef * GSM_IO_GetBuffer();
 
