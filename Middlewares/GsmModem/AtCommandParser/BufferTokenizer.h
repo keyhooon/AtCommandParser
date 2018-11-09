@@ -11,26 +11,28 @@
 
 
 typedef struct {
+	BufferStream_TypeDef * bufferStream;
 	char * Footer;
 	unsigned int FooterCount;
-	char * Seperator;
-	unsigned int SeperatorCount;
+	char * Separator;
+	unsigned int SeparatorCount;
 } Tokenizer_TypeDef;
 
-typedef struct {
-	char * String;
-	unsigned int Length;
-} FixedLengthString_TypeDef;
 
 typedef struct {
-	FixedLengthString_TypeDef * Items;
-	unsigned int Count;
+	char * item;
+	int length;
+	int needTobeRealesed;
+} bufToken_TypeDef;
+
+typedef struct {
+	char ** Items;
 	int IndexNeedToBeReleased;
 } TokensList_TypeDef;
 
-Tokenizer_TypeDef * AtTokenizerInit();
+Tokenizer_TypeDef * AtTokenizerInit(char * seperator, char * footer);
 void AtTokenizerDeInit(Tokenizer_TypeDef * tokenizer);
-TokensList_TypeDef AtTokenizedResponse(
+TokensList_TypeDef BufferTokenizerTokenizeResponse(
 		Tokenizer_TypeDef * Tokenizer, unsigned int length);
 
 

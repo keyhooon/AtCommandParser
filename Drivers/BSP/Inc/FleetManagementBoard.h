@@ -99,6 +99,7 @@ void GSM_IO_Write(char * buffer, uint32_t length);
 void GSM_IO_Read(char * data, uint32_t length);
 void GSM_IO_ReadBefore(char * data, uint32_t length);
 char * GSM_IO_Read_Char();
+int GSM_IO_Check_Chars_Equality(char *data, int length);
 BufferStream_TypeDef * GSM_IO_GetBuffer();
 
 void GSM_DataReceivedCallback(uint32_t Length);

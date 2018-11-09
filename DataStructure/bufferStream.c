@@ -37,8 +37,7 @@ void BufferStreamRead(BufferStream_TypeDef * bufferStream, char *data,
 	bufferStream->tail += count;
 }
 
-inline char * BufferStreamReadChar(
-		BufferStream_TypeDef * bufferStream)
+inline char * BufferStreamReadChar(BufferStream_TypeDef * bufferStream)
  {
 	char * result;
 	if (bufferStream->tail == bufferStream->head)
@@ -49,6 +48,23 @@ inline char * BufferStreamReadChar(
 		bufferStream->tail = 0;
 
 	return result;
+}
+inline int BufferStreamCheckEquality(BufferStream_TypeDef * bufferStream, char * data)
+{
+	int i = 0;
+	while(*data != 0)
+	{
+		if (BufferStreamCheckEndOfFile(bufferStream))
+			return 0;
+		if (*(bufferStream->buffer + bufferStream->tail + i++) != *data++)
+			return 0;
+		if (bufferStream->tail + i >= bufferStream->length)
+			i = i - bufferStream->length;
+	}
+	return 1;
+}
+inline int BufferStreamCheckEndOfFile(BufferStream_TypeDef * bufferStream){
+	return bufferStream->head == bufferStream->tail;
 }
 
 inline void BufferStreamReadBefore(BufferStream_TypeDef * bufferStream,

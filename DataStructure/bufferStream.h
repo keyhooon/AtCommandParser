@@ -31,13 +31,9 @@ BufferStream_TypeDef * BufferStreamInit(uint32_t bufferLenght);
 
 void BufferStreamDeinit(BufferStream_TypeDef * bufferStream);
 
-void BufferStreamRead(BufferStream_TypeDef * bufferStream, char *data,
-
-		unsigned int count);
-inline void BufferStreamReadBefore(BufferStream_TypeDef * bufferStream,
-		char *data, unsigned int count);
-
-inline char* BufferStreamReadChar(
-		BufferStream_TypeDef * bufferStream);
+void BufferStreamRead(BufferStream_TypeDef * bufferStream, char *data, unsigned int count);
+inline int BufferStreamCheckEquality(BufferStream_TypeDef * bufferStream, char * data, int dataLength);
+inline void BufferStreamReadBefore(BufferStream_TypeDef * bufferStream,	char *data, unsigned int count);
+inline char* BufferStreamReadChar(BufferStream_TypeDef * bufferStream);
 
 #endif /* DATASTRUCTURE_BUFFERSTREAM_H_ */

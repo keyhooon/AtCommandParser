@@ -46,7 +46,7 @@ static void COMx_Write_DMA(COM_TypeDef COM, char *buffer, uint8_t length);
 static void COMx_Read(COM_TypeDef COM, char * data, uint32_t length);
 inline static void COMx_ReadBefore(COM_TypeDef COM, char * data,
 		uint32_t length);
-inline static char * COMx_Read_Char(COM_TypeDef COM);
+inline static int COMx_Check_Chars_Equality(COM_TypeDef COM, char * data, int length);
 void COMx_DataReceivedCallback(COM_TypeDef COM, uint32_t Length);
 static void COMx_Error(COM_TypeDef COM);
 
@@ -253,6 +253,11 @@ inline static char * COMx_Read_Char(COM_TypeDef COM)
 	return BufferStreamReadChar(FLEET_COMx_BUFFER_STREAM[COM]);
 }
 
+inline static int COMx_Check_Chars_Equality(COM_TypeDef COM, char * data, int length)
+{
+	return BufferStreamCheckEquality(FLEET_COMx_BUFFER_STREAM[COM] data, length);
+}
+
 
 /**
  * @brief  Callback raise when data received from COMx
@@ -357,6 +362,12 @@ void GSM_IO_ReadBefore(char * data, uint32_t length) {
 
 char* GSM_IO_Read_Char() {
 	return COMx_Read_Char(GSM_COM);
+}
+
+
+int GSM_IO_Check_Chars_Equality(char *data, int length)
+{
+	return COMx_Check_Chars_Equality(GSM_COM, data, length);
 }
 
 BufferStream_TypeDef * GSM_IO_GetBuffer() {

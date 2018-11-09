@@ -8,8 +8,8 @@
 #ifndef ATCOMMANDPARSER_COMMAND_H_
 #define ATCOMMANDPARSER_COMMAND_H_
 
+#include <BufferTokenizer.h>
 #include "stdint.h"
-#include "AtTokenizer.h"
 #include "cmsis_os.h"
 /* Acknowledges execution of a Command
  * */
@@ -65,6 +65,7 @@ typedef struct CommandParser_Struct
 	char responseFormat;						// v
 	Tokenizer_TypeDef * ResponseTokenizer;
 	osMutexId mutexId;
+	osSemaphoreId semaphoreId;
 	osMessageQId messageId;
 } AtCommandExecuter_TypeDef;
 

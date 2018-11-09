@@ -17,8 +17,7 @@ extern const CommandType_TypeDef HttpCommands[6];
 extern const CommandType_TypeDef TcpIpCommands[34];
 
 
-osMessageQId GsmMessageId;
-AtCommandExecuter_TypeDef * GsmCommandExecuter;
+
 
 
 
@@ -44,16 +43,10 @@ static inline int Extended_Read_Command(CommandType_TypeDef commandType,
 
 void BSP_GSM_Init()
 {
-	osMessageQDef(Gsm, 1, unsigned int);
-	GsmMessageId = osMessageCreate(osMessageQ(Gsm), NULL);
 	GSM_IO_Init();
-	GsmCommandExecuter = CommandExecuter_Init(GSM_IO_GetBuffer(), GsmMessageId,
-			GSM_IO_Write);
 }
 
-void GSM_DataReceivedCallback(uint32_t Length) {
-	osMessagePut(GsmMessageId, Length, osWaitForever);
-}
+
 
 
 void GSM_QueryVersionInformation(char * manufactureName, char * moduleName,

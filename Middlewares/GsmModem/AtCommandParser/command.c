@@ -32,7 +32,7 @@ AtCommandExecuter_TypeDef * CommandExecuter_Init(osMessageQId messageId) {
 	COMMAND_LINE_TERMINATION_CAHR_DEFAULT;
 	commandExecuter->responseForamettingChar = RESPONSE_FORMATTING_CHAR_DEFAULT;
 	commandExecuter->responseFormat = RESPONSE_FORMAT_DEFAULT;
-	commandExecuter->ResponseTokenizer = AtTokenizerInit();
+	commandExecuter->ResponseTokenizer = AtTokenizerInit(ATCOMMAND_SEPERATOR, ATCOMMAND_FOOTER);
 	osMutexDef_t mutex = { 0 };
 	commandExecuter->mutexId = osMutexCreate(&mutex);
 	commandExecuter->messageId = messageId;
@@ -120,7 +120,7 @@ void GetCommandString(char* commandText,
 
 Response_TypeDef * ResponseReceived(AtCommandExecuter_TypeDef commandExecuter,
 		unsigned int length) {
-	TokensList_TypeDef tokensList = AtTokenizedResponse(
+	TokensList_TypeDef tokensList = BufferTokenizerTokenizeResponse(
 			commandExecuter.ResponseTokenizer, length);
 	Response_TypeDef * result;
 	result = pvPortMalloc(sizeof(Response_TypeDef));
